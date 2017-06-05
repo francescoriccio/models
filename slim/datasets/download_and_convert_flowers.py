@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-r"""Downloads and converts Flowers data to TFRecords of TF-Example protos.
+"""Downloads and converts Flowers data to TFRecords of TF-Example protos.
 
 This module downloads the Flowers data, uncompresses it, reads the files
 that make up the Flowers data and creates two TFRecord datasets: one for train
@@ -143,7 +143,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
             class_id = class_names_to_ids[class_name]
 
             example = dataset_utils.image_to_tfexample(
-                image_data, 'jpg', height, width, class_id)
+                image_data, b'jpg', height, width, class_id)
             tfrecord_writer.write(example.SerializeToString())
 
   sys.stdout.write('\n')
@@ -209,4 +209,3 @@ def run(dataset_dir):
 
   _clean_up_temporary_files(dataset_dir)
   print('\nFinished converting the Flowers dataset!')
-

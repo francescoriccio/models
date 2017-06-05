@@ -451,7 +451,7 @@ def main(_):
     def clone_fn(batch_queue):
       """Allows data parallelism by creating multiple clones of network_fn."""
       images, labels = batch_queue.dequeue()
-      logits, end_points = network_fn(images)
+      logits, end_points, _ = network_fn(images)
 
       #############################
       # Specify the loss function #

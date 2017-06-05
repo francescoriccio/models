@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-r"""Downloads and converts a particular dataset.
+"""Downloads and converts a particular dataset.
 
 Usage:
 ```shell
@@ -39,6 +39,7 @@ import tensorflow as tf
 from datasets import download_and_convert_cifar10
 from datasets import download_and_convert_flowers
 from datasets import download_and_convert_mnist
+from datasets import convert_cold_prosilica_right
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -65,10 +66,12 @@ def main(_):
     download_and_convert_flowers.run(FLAGS.dataset_dir)
   elif FLAGS.dataset_name == 'mnist':
     download_and_convert_mnist.run(FLAGS.dataset_dir)
+  elif FLAGS.dataset_name == 'cold_prosilica_right':
+    convert_cold_prosilica_right.run(FLAGS.dataset_dir)
+
   else:
     raise ValueError(
         'dataset_name [%s] was not recognized.' % FLAGS.dataset_dir)
 
 if __name__ == '__main__':
   tf.app.run()
-

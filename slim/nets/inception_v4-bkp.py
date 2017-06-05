@@ -47,12 +47,9 @@ def block_inception_a(inputs, scope=None, reuse=None):
         branch_2 = slim.conv2d(branch_2, 96, [3, 3], scope='Conv2d_0b_3x3')
         branch_2 = slim.conv2d(branch_2, 96, [3, 3], scope='Conv2d_0c_3x3')
       with tf.variable_scope('Branch_3'):
-        pooling_inputs = inputs
         branch_3 = slim.avg_pool2d(inputs, [3, 3], scope='AvgPool_0a_3x3')
         branch_3 = slim.conv2d(branch_3, 96, [1, 1], scope='Conv2d_0b_1x1')
-      return tf.concat(axis=3,
-                       values=[branch_0, branch_1, branch_2, branch_3]), \
-                       pooling_inputs
+      return tf.concat(axis=3, values=[branch_0, branch_1, branch_2, branch_3])
 
 
 def block_reduction_a(inputs, scope=None, reuse=None):
@@ -94,12 +91,9 @@ def block_inception_b(inputs, scope=None, reuse=None):
         branch_2 = slim.conv2d(branch_2, 224, [7, 1], scope='Conv2d_0d_7x1')
         branch_2 = slim.conv2d(branch_2, 256, [1, 7], scope='Conv2d_0e_1x7')
       with tf.variable_scope('Branch_3'):
-        pooling_inputs = inputs
         branch_3 = slim.avg_pool2d(inputs, [3, 3], scope='AvgPool_0a_3x3')
         branch_3 = slim.conv2d(branch_3, 128, [1, 1], scope='Conv2d_0b_1x1')
-      return tf.concat(axis=3,
-                       values=[branch_0, branch_1, branch_2, branch_3]), \
-                       pooling_inputs
+      return tf.concat(axis=3, values=[branch_0, branch_1, branch_2, branch_3])
 
 
 def block_reduction_b(inputs, scope=None, reuse=None):
@@ -145,12 +139,9 @@ def block_inception_c(inputs, scope=None, reuse=None):
             slim.conv2d(branch_2, 256, [1, 3], scope='Conv2d_0d_1x3'),
             slim.conv2d(branch_2, 256, [3, 1], scope='Conv2d_0e_3x1')])
       with tf.variable_scope('Branch_3'):
-        pooling_inputs = inputs
         branch_3 = slim.avg_pool2d(inputs, [3, 3], scope='AvgPool_0a_3x3')
         branch_3 = slim.conv2d(branch_3, 256, [1, 1], scope='Conv2d_0b_1x1')
-      return tf.concat(axis=3,
-                       values=[branch_0, branch_1, branch_2, branch_3]), \
-                       pooling_inputs
+      return tf.concat(axis=3, values=[branch_0, branch_1, branch_2, branch_3])
 
 
 def inception_v4_base(inputs, final_endpoint='Mixed_7d', scope=None):
@@ -230,53 +221,36 @@ def inception_v4_base(inputs, final_endpoint='Mixed_7d', scope=None):
         net = tf.concat(axis=3, values=[branch_0, branch_1])
         if add_and_check_final('Mixed_5a', net): return net, end_points
 
-
-      pooling_inputs = [[], [], []]
       # 35 x 35 x 384
       # 4 x Inception-A blocks
-      block_A_pooling_inputs = []
       for idx in range(4):
         block_scope = 'Mixed_5' + chr(ord('b') + idx)
-        net, pooling_input = block_inception_a(net, block_scope)
-        block_A_pooling_inputs.append(pooling_input)
-        pooling_inputs[0] = block_A_pooling_inputs
-        if add_and_check_final(block_scope, net):
-          return net, end_points, pooling_inputs
+        net = block_inception_a(net, block_scope)
+        if add_and_check_final(block_scope, net): return net, end_points
 
       # 35 x 35 x 384
       # Reduction-A block
       net = block_reduction_a(net, 'Mixed_6a')
-      if add_and_check_final('Mixed_6a', net):
-        return net, end_points, pooling_inputs
+      if add_and_check_final('Mixed_6a', net): return net, end_points
 
       # 17 x 17 x 1024
       # 7 x Inception-B blocks
-      block_B_pooling_inputs = []
       for idx in range(7):
         block_scope = 'Mixed_6' + chr(ord('b') + idx)
-        net, pooling_input = block_inception_b(net, block_scope)
-        block_B_pooling_inputs.append(pooling_input)
-        pooling_inputs[1] = block_B_pooling_inputs
-        if add_and_check_final(block_scope, net):
-          return net, end_points, pooling_inputs
+        net = block_inception_b(net, block_scope)
+        if add_and_check_final(block_scope, net): return net, end_points
 
       # 17 x 17 x 1024
       # Reduction-B block
       net = block_reduction_b(net, 'Mixed_7a')
-      if add_and_check_final('Mixed_7a', net):
-        return net, end_points, pooling_inputs
+      if add_and_check_final('Mixed_7a', net): return net, end_points
 
       # 8 x 8 x 1536
       # 3 x Inception-C blocks
-      block_C_pooling_inputs = []
       for idx in range(3):
         block_scope = 'Mixed_7' + chr(ord('b') + idx)
-        net, pooling_input = block_inception_c(net, block_scope)
-        block_C_pooling_inputs.append(pooling_input)
-        pooling_inputs[2] = block_C_pooling_inputs
-        if add_and_check_final(block_scope, net):
-          return net, end_points, pooling_inputs
-
+        net = block_inception_c(net, block_scope)
+        if add_and_check_final(block_scope, net): return net, end_points
   raise ValueError('Unknown final endpoint %s' % final_endpoint)
 
 
@@ -295,7 +269,7 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
     reuse: whether or not the network and its variables should be reused. To be
       able to reuse 'scope' must be given.
     scope: Optional variable_scope.
-    create_aux_logits: Whether to include the auxilliary logits.
+    create_aux_logits: Whether to include the auxiliary logits.
 
   Returns:
     logits: the logits outputs of the model.
@@ -305,7 +279,7 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
   with tf.variable_scope(scope, 'InceptionV4', [inputs], reuse=reuse) as scope:
     with slim.arg_scope([slim.batch_norm, slim.dropout],
                         is_training=is_training):
-      net, end_points, pooling_inputs = inception_v4_base(inputs, scope=scope)
+      net, end_points = inception_v4_base(inputs, scope=scope)
 
       with slim.arg_scope([slim.conv2d, slim.max_pool2d, slim.avg_pool2d],
                           stride=1, padding='SAME'):
@@ -331,7 +305,6 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
         # Final pooling and prediction
         with tf.variable_scope('Logits'):
           # 8 x 8 x 1536
-          pooling_inputs.append(net)
           net = slim.avg_pool2d(net, net.get_shape()[1:3], padding='VALID',
                                 scope='AvgPool_1a')
           # 1 x 1 x 1536
@@ -343,7 +316,8 @@ def inception_v4(inputs, num_classes=1001, is_training=True,
                                         scope='Logits')
           end_points['Logits'] = logits
           end_points['Predictions'] = tf.nn.softmax(logits, name='Predictions')
-    return logits, end_points, pooling_inputs
-
+    return logits, end_points
 inception_v4.default_image_size = 299
+
+
 inception_v4_arg_scope = inception_utils.inception_arg_scope

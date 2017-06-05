@@ -22,12 +22,14 @@ from datasets import cifar10
 from datasets import flowers
 from datasets import imagenet
 from datasets import mnist
+from datasets import cold_prosilica_right
 
 datasets_map = {
-    'cifar10': cifar10,
-    'flowers': flowers,
-    'imagenet': imagenet,
-    'mnist': mnist,
+  'cifar10': cifar10,
+  'flowers': flowers,
+  'imagenet': imagenet,
+  'mnist': mnist,
+  'cold_prosilica_right': cold_prosilica_right
 }
 
 
