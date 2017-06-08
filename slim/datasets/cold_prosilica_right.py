@@ -13,7 +13,7 @@ slim = tf.contrib.slim
 
 _FILE_PATTERN = 'cold_prosilica_right_%s_*.tfrecord'
 
-SPLITS_TO_SIZES = {'train': 2000, 'validation': 741}
+SPLITS_TO_SIZES = {'train': 844, 'validation': 270}
 
 _NUM_CLASSES = 4
 

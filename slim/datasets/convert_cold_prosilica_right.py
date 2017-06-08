@@ -16,7 +16,7 @@ from datasets import dataset_utils
 _CLASSES = ['corridor', 'door', 'small', 'large']
 
 # The number of images in the validation set.
-_NUM_VALIDATION = 741  ## complete dataset elements: 2741
+_NUM_VALIDATION = 0  ## complete dataset elements: 844, train 270
 
 # Seed for repeatability.
 _RANDOM_SEED = 0
@@ -166,8 +166,9 @@ def run(dataset_dir):
     # First, convert the training and validation sets.
     _convert_dataset('train', training_filenames, class_names_to_ids,
                      dataset_dir)
-    _convert_dataset('validation', validation_filenames, class_names_to_ids,
-                     dataset_dir)
+    if _NUM_VALIDATION != 0:
+        _convert_dataset('validation', validation_filenames, class_names_to_ids,
+                         dataset_dir)
 
     # Finally, write the labels file:
     labels_to_class_names = dict(zip(range(len(class_names)), class_names))
