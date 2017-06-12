@@ -13,10 +13,12 @@ import tensorflow as tf
 
 from datasets import dataset_utils
 
+#_FILE_PATTERN = 'cold_prosilica_right'
+_FILE_PATTERN = 'cold_videre'
 _CLASSES = ['corridor', 'door', 'small', 'large']
 
 # The number of images in the validation set.
-_NUM_VALIDATION = 0  ## complete dataset elements: 844, train 270
+_NUM_VALIDATION = 270  ## train: 844, validation 270
 
 # Seed for repeatability.
 _RANDOM_SEED = 0
@@ -73,8 +75,9 @@ def _get_filenames_and_classes(dataset_dir):
     return photo_filenames, sorted(class_names)
 
 def _get_dataset_filename(dataset_dir, split_name, shard_id):
-    output_filename = 'cold_prosilica_right_%s_%05d-of-%05d.tfrecord' % (
+    output_filename = '_%s_%05d-of-%05d.tfrecord' % (
         split_name, shard_id, _NUM_SHARDS)
+    output_filename = _FILE_PATTERN + output_filename
     return os.path.join(dataset_dir, output_filename)
 
 def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
@@ -164,10 +167,11 @@ def run(dataset_dir):
     validation_filenames = photo_filenames[:_NUM_VALIDATION]
 
     # First, convert the training and validation sets.
-    _convert_dataset('train', training_filenames, class_names_to_ids,
-                     dataset_dir)
     if _NUM_VALIDATION != 0:
         _convert_dataset('validation', validation_filenames, class_names_to_ids,
+                         dataset_dir)
+    else:
+        _convert_dataset('train', training_filenames, class_names_to_ids,
                          dataset_dir)
 
     # Finally, write the labels file:

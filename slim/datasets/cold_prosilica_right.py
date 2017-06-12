@@ -11,7 +11,8 @@ from datasets import dataset_utils
 
 slim = tf.contrib.slim
 
-_FILE_PATTERN = 'cold_prosilica_right_%s_*.tfrecord'
+#_FILE_PATTERN = 'cold_prosilica_right_%s_*.tfrecord'
+_FILE_PATTERN = 'cold_videre_%s_*.tfrecord'
 
 SPLITS_TO_SIZES = {'train': 844, 'validation': 270}
 
