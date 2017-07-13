@@ -71,7 +71,7 @@ def main(_):
 
   else:
     raise ValueError(
-        'dataset_name [%s] was not recognized.' % FLAGS.dataset_dir)
+        'dataset_name [%s] was not recognized.' % FLAGS.dataset_name)
 
 if __name__ == '__main__':
   tf.app.run()
